@@ -15,8 +15,8 @@ test_group = filter(data, group == 'test')
 #Конверсия = (Количество успешных конверсий / Общее количество кликов) 
 A_conversion = (sum(control_group$number_of_purchases) / sum(control_group$clicks))
 #Конверсия = 0.0694
-#Допустим, что мы хотим увеличить конверсию на 25%
-mde = 0.25
+#Допустим, что мы хотим увеличить конверсию на 15%
+mde = 0.15
 target_conversion = A_conversion*mde + A_conversion
 #Желаемая конверсия = 0,0867
 
@@ -32,3 +32,29 @@ power.prop.test( p1 = A_conversion, p2 = target_conversion, sig.level = 0.05, po
 
 B_conversion = (sum(test_group$number_of_purchases) / sum(test_group$clicks))#0.0799
 dif_conv = (B_conversion - A_conversion)/A_conversion 
+#Конверсия увеличилась более чем на 15% желаемых процентов, при мощности теста = 1
+#уже можно считать, что мы победили 
+#Проверим наши данные на нормальность распределений
+
+qqnorm(test_group$clicks)
+qqline(test_group$clicks)
+hist(test_group$clicks, col='steelblue', main='Normal')
+
+qqnorm(test_group$number_of_purchases)
+qqline(test_group$number_of_purchases)
+hist(test_group$number_of_purchases, col='steelblue', main='Normal')
+
+qqnorm(control_group$clicks)
+qqline(control_group$clicks)
+hist(control_group$clicks, col='steelblue', main='Normal')
+
+qqnorm(control_group$number_of_purchases)
+qqline(control_group$number_of_purchases)
+hist(control_group$number_of_purchases, col='steelblue', main='Normal')
+#Исходя из графиков выше, можно сделать вывод о ненормальности распределения
+
+#Проводим не параметрические тесты, т.к. респределение не нормальное
+#Например, критерий Манна-Уитни
+#Тест Крускалла-Уоллиса
+#Бутстрэп
+#Критерий Стьюдента? 
