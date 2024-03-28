@@ -1,5 +1,7 @@
 #install.packages("dplyr")
 #install.packages("tidyverse")
+#install.packages("ggplot2")
+library(ggplot2)
 library(dplyr)
 library (tidyverse)
 dir()
@@ -28,7 +30,7 @@ power.prop.test(n = length( data$user_id), p1 = A_conversion, p2 = target_conver
 #Это объясняется объемом датасета, обычно рекомендованная мощность равна 0,8
 power.prop.test( p1 = A_conversion, p2 = target_conversion, sig.level = 0.05, power = 0.8, 
                 alternative = "two.sided")
-#Нам бы хватило 3752 наблюдений, для проведения теста
+#Нам бы хватило 9999 наблюдений, для проведения теста
 
 B_conversion = (sum(test_group$number_of_purchases) / sum(test_group$clicks))#0.0799
 dif_conv = (B_conversion - A_conversion)/A_conversion 
@@ -53,8 +55,18 @@ qqline(control_group$number_of_purchases)
 hist(control_group$number_of_purchases, col='steelblue', main='Normal')
 #Исходя из графиков выше, можно сделать вывод о ненормальности распределения
 
-#Проводим не параметрические тесты, т.к. респределение не нормальное
+#Проводим не параметрические тесты, т.к. распределение не нормальное
 #Например, критерий Манна-Уитни
-#Тест Крускалла-Уоллиса
-#Бутстрэп
-#Критерий Стьюдента? 
+#H0 - Нет статистически значимой разницы между группами A и B.
+#H1 - Существует статистически значимая разница между группами A и B.
+wilcox.test(test_group$clicks, control_group$clicks)
+#Так как p-value = 0.3838,что более 0,05 то у нас недостаточно оснований для отвержения
+#нулевой гипотезы (количество кликов поменялось на статистически не значимую величину)
+wilcox.test(test_group$number_of_purchases, control_group$number_of_purchases)
+#Так как p-value < 2.2e-16,что менее 0,05 то мы отвергаем нулевую гипотезу в пользу альтернативной
+#Это означает, что есть статистически значимые различия между группами.
+
+#Визуализация 
+#Boxplot, отражает распределение данных
+boxplot(test_group$clicks,test_group$number_of_purchases)
+boxplot(control_group$clicks,control_group$number_of_purchases)
