@@ -5,7 +5,7 @@ library(ggplot2)
 library(dplyr)
 library (tidyverse)
 dir()
-setwd("C:/Users/groshev.va/Desktop/ab")
+setwd("C:/Users/groshev.va/Desktop/ab")#Указываем директорию в которой лежит датасет
 
 data = read.csv("ab_test_results_aggregated_views_clicks_6.csv")
 names(data) <- c("user_id", "group", "clicks","number_of_purchases" )
@@ -70,3 +70,9 @@ wilcox.test(test_group$number_of_purchases, control_group$number_of_purchases)
 #Boxplot, отражает распределение данных
 boxplot(test_group$clicks,test_group$number_of_purchases)
 boxplot(control_group$clicks,control_group$number_of_purchases)
+#Визуализируем количественную разницу 
+clicks_bar = tapply(data$clicks, data$group, sum)
+purchases_bar =tapply(data$number_of_purchases, data$group, sum)
+
+barplot(height =clicks_bar, col = 'blue', xlab = "Groups", ylab = "Count clicks")
+barplot(height =purchases_bar, col = 'blue',xlab = "Groups", ylab = "Count purchases")
